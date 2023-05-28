@@ -12,13 +12,25 @@ info:
     name: Recipes Licence
   version: 1.0.0
 servers:
-- url: https://dev.foo.com/v1
+# local:
+- url: "http://127.0.0.1:3000"
   description: Dev Server
-- url: https://prod.foo.com/v1
+#remote
+- url: "http://132.73.84.115"
   description: Prod Server
+tags:
+- name: Auth
+  description: All authentication related routes
+- name: Users
+  description: All the user's personal app info
+- name: Recipes
+  description: All reciepes general info
+
 paths:
   /recipes:
     get:
+    -tags:
+    - Recipes
       summary: Retrieve a list of recipes
       description: Retrieves a list of recipes based on the provided search parameters.
       parameters:
@@ -73,6 +85,8 @@ paths:
           description: Bad request. Invalid recipe object provided.
   /recipes/{recipeId}:
     get:
+      tags:
+      - Recipes
       summary: Retrieve recipe details
       description: Retrieves the details of a specific recipe.
       parameters:
@@ -90,7 +104,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Recipe'
+                $ref: '#/components/schemas/RecipePreview'
         "404":
           description: Recipe not found.
     put:
@@ -118,38 +132,136 @@ paths:
           description: Bad request. Invalid recipe object provided.
         "404":
           description: Recipe not found.
+  /register:
+    post:
+      tags:
+      - Auth
+      summary: A new user from the client is added to the server
+      description: A JSON object contains all the details about the new user.
+      requestBody:
+        description: Inventory item to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        "201":
+          description: A new user has been added
+        "400":
+          description: wrong input parameters
+  /login:
+    post:
+      tags:
+      - Auth
+      summary: Login an exist user
+      description: An exist user login to the system
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginScheme'
+        required: true
+      responses:
+        "200":
+          description: |
+            User was found in the DB and authenitcated successfully. The session ID is returned in a cookie named `session`.  You should include this cookie in subsequent requests
+          headers:
+            Set-Cookie:
+              style: simple
+              explode: false
+              schema:
+                type: string
+                example: session=87s97sdhgf279293f8w0e9
+        "401":
+          description: Authentication failed
+  /logout:
+    post:
+      tags:
+        - Auth
+      summary: logout a user from the system and delete his cookie
+      responses:
+        "200":
+          description: "the user has ben successfully logged out"
+  /users/favorites:
+    get:
+      tags:
+      - Users
+      summary: Return the favorite recipes that were saved by user
+      description: Get an array of recipes that were saved by a specific user
+      responses:
+        "200":
+          description: data about the user's favorites recipes returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecipePreview'
+        "401":
+          description: user is not authorized
+      security:
+      - cookieAuth: []
+    post:
+      tags:
+      - Users
+      summary: save recipe in the favorites list of a user
+      description: save recipe in the favorites list of a user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reciepeId:
+                  type: string
+                  description: reciepe's id which the user saved
+                  example: 716429
+      responses:
+        "200":
+          description: The Recipe successfully saved as favorite
+        "401":
+          description: user is not authorized
+      security:
+      - cookieAuth: []
 components:
   schemas:
-    Recipe:
+    RecipePreview:
       type: object
       properties:
         id:
           type: integer
-          description: The unique ID of the recipe.
-        name:
+          description: recipe identifier
+          example: 102
+        title:
           type: string
-          description: The name/title of the recipe.
-        preparationTime:
+          description: recipe name
+          example: Simple Macaroni and Cheese
+        image:
           type: string
-          description: The amount of time the preparation process takes.
-        likes:
+          description: recipe image
+          format: URL
+          example: https://spoonacular.com/recipeimages/655455-566x370.jpg
+        readyInMinutes:
           type: integer
-          description: The number of likes the recipe has received.
-        vegan:
-          type: boolean
-          description: Indicates if the recipe is vegan.
+          description: the time takes to make this recipe
+          example: 45
+        popularity:
+          type: integer
+          description: how many likes got this recipe
+          example: 5987
         vegetarian:
           type: boolean
-          description: Indicates if the recipe is vegetarian.
+          description: indication if the recipe is vegetarian
+          example: false
+        vegan:
+          type: boolean
+          description: indication if the recipe is vegan
+          example: false
         glutenFree:
           type: boolean
-          description: Indicates if the recipe is gluten-free.
-        viewed:
-          type: boolean
-          description: Indicates if the user has viewed the recipe.
-        favorite:
-          type: boolean
-          description: Indicates if the user has saved the recipe as a favorite.
+          description: indication if the recipe is gluten free
+          example: false
     User:
       type: object
       properties:

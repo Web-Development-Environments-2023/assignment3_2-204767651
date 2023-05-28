@@ -1,14 +1,401 @@
-openapi: 3.0.0
+# openapi: 3.0.3
+# info:
+#   title: Recipe Search System API
+#   description: "This API provides functionalities for a recipe search system, allowing users to browse and search for recipes, save favorites, create their own recipes, and plan meals."
+#   termsOfService: blha
+#   contact:
+#     name: Ido
+#     url: https://github.com/idolou
+#     email: idolou1@gmail.com
+#   license:
+#     name: Recipes Licence
+#   version: 1.0.0
+# servers:
+# # local:
+# - url: "http://127.0.0.1:3000"
+#   description: Dev Server
+# #remote
+# - url: "http://132.73.84.115"
+#   description: Prod Server
+# tags:
+# - name: Auth
+#   description: All authentication related routes
+# - name: Users
+#   description: All the user's personal app info
+# - name: Recipes
+#   description: All reciepes general info
+
+# paths:
+#   /recipes:
+#     get:
+#     -tags:
+#     - Recipes
+#       summary: Retrieve a list of recipes
+#       description: Retrieves a list of recipes based on the provided search parameters.
+#       parameters:
+#       - name: query
+#         in: query
+#         description: The search query for recipes.
+#         required: false
+#         style: form
+#         explode: true
+#         schema:
+#           type: string
+#       - name: cuisine
+#         in: query
+#         description: The cuisine type to filter the recipes.
+#         required: false
+#         style: form
+#         explode: true
+#         schema:
+#           type: string
+#       - name: diet
+#         in: query
+#         description: The diet type to filter the recipes.
+#         required: false
+#         style: form
+#         explode: true
+#         schema:
+#           type: string
+#       responses:
+#         "200":
+#           description: Successful response with a list of recipes.
+#           content:
+#             application/json:
+#               schema:
+#                 type: array
+#                 items:
+#                   $ref: '#/components/schemas/Recipe'
+#         "400":
+#           description: Bad request. Invalid query parameters provided.
+#     post:
+#       summary: Create a new recipe
+#       description: Creates a new recipe in the system.
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/Recipe'
+#         required: true
+#       responses:
+#         "201":
+#           description: Recipe created successfully.
+#         "400":
+#           description: Bad request. Invalid recipe object provided.
+#   /recipes/{recipeId}:
+#     get:
+#       tags:
+#       - Recipes
+#       summary: Retrieve recipe details
+#       description: Retrieves the details of a specific recipe.
+#       parameters:
+#       - name: recipeId
+#         in: path
+#         description: The ID of the recipe.
+#         required: true
+#         style: simple
+#         explode: false
+#         schema:
+#           type: integer
+#       responses:
+#         "200":
+#           description: Successful response with the recipe details.
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/RecipePreview'
+#         "404":
+#           description: Recipe not found.
+#     put:
+#       summary: Update a recipe
+#       description: Updates an existing recipe in the system.
+#       parameters:
+#       - name: recipeId
+#         in: path
+#         description: The ID of the recipe to update.
+#         required: true
+#         style: simple
+#         explode: false
+#         schema:
+#           type: integer
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/Recipe'
+#         required: true
+#       responses:
+#         "200":
+#           description: Recipe updated successfully.
+#         "400":
+#           description: Bad request. Invalid recipe object provided.
+#         "404":
+#           description: Recipe not found.
+#   /register:
+#     post:
+#       tags:
+#       - Auth
+#       summary: A new user from the client is added to the server
+#       description: A JSON object contains all the details about the new user.
+#       requestBody:
+#         description: Inventory item to add
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/User'
+#         required: true
+#       responses:
+#         "201":
+#           description: A new user has been added
+#         "400":
+#           description: wrong input parameters
+#   /login:
+#     post:
+#       tags:
+#       - Auth
+#       summary: Login an exist user
+#       description: An exist user login to the system
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/LoginScheme'
+#         required: true
+#       responses:
+#         "200":
+#           description: |
+#             User was found in the DB and authenitcated successfully. The session ID is returned in a cookie named `session`.  You should include this cookie in subsequent requests
+#           headers:
+#             Set-Cookie:
+#               style: simple
+#               explode: false
+#               schema:
+#                 type: string
+#                 example: session=87s97sdhgf279293f8w0e9
+#         "401":
+#           description: Authentication failed
+#   /logout:
+#     post:
+#       tags:
+#         - Auth
+#       summary: logout a user from the system and delete his cookie
+#       responses:
+#         "200":
+#           description: "the user has ben successfully logged out"
+#   /users/favorites:
+#     get:
+#       tags:
+#       - Users
+#       summary: Return the favorite recipes that were saved by user
+#       description: Get an array of recipes that were saved by a specific user
+#       responses:
+#         "200":
+#           description: data about the user's favorites recipes returned
+#           content:
+#             application/json:
+#               schema:
+#                 type: array
+#                 items:
+#                   $ref: '#/components/schemas/RecipePreview'
+#         "401":
+#           description: user is not authorized
+#       security:
+#       - cookieAuth: []
+#     post:
+#       tags:
+#       - Users
+#       summary: save recipe in the favorites list of a user
+#       description: save recipe in the favorites list of a user
+#       requestBody:
+#         content:
+#           application/json:
+#             schema:
+#               type: object
+#               properties:
+#                 reciepeId:
+#                   type: string
+#                   description: reciepe's id which the user saved
+#                   example: 716429
+#       responses:
+#         "200":
+#           description: The Recipe successfully saved as favorite
+#         "401":
+#           description: user is not authorized
+#       security:
+#       - cookieAuth: []
+# components:
+#   schemas:
+#     RecipePreview:
+#       type: object
+#       properties:
+#         id:
+#           type: integer
+#           description: recipe identifier
+#           example: 102
+#         title:
+#           type: string
+#           description: recipe name
+#           example: Simple Macaroni and Cheese
+#         image:
+#           type: string
+#           description: recipe image
+#           format: URL
+#           example: https://spoonacular.com/recipeimages/655455-566x370.jpg
+#         readyInMinutes:
+#           type: integer
+#           description: the time takes to make this recipe
+#           example: 45
+#         popularity:
+#           type: integer
+#           description: how many likes got this recipe
+#           example: 5987
+#         vegetarian:
+#           type: boolean
+#           description: indication if the recipe is vegetarian
+#           example: false
+#         vegan:
+#           type: boolean
+#           description: indication if the recipe is vegan
+#           example: false
+#         glutenFree:
+#           type: boolean
+#           description: indication if the recipe is gluten free
+#           example: false
+#     User:
+#       type: object
+#       properties:
+#         id:
+#           type: integer
+#           description: The unique ID of the user.
+#         name:
+#           type: string
+#           description: The name of the user.
+#         email:
+#           type: string
+#           description: The email address of the user.
+#           format: email
+#         password:
+#           type: string
+#           description: The password of the user.
+#         favorites:
+#           type: array
+#           description: The list of favorite recipes for the user.
+#           items:
+#             $ref: '#/components/schemas/Recipe'
+#         personalRecipes:
+#           type: array
+#           description: The list of personal recipes created by the user.
+#           items:
+#             $ref: '#/components/schemas/Recipe'
+#     FamilyRecipe:
+#       type: object
+#       properties:
+#         id:
+#           type: integer
+#           description: The unique ID of the family recipe.
+#         name:
+#           type: string
+#           description: The name/title of the family recipe.
+#         preparationTime:
+#           type: string
+#           description: The amount of time the preparation process takes.
+#         likes:
+#           type: integer
+#           description: The number of likes the family recipe has received.
+#         vegan:
+#           type: boolean
+#           description: Indicates if the family recipe is vegan.
+#         vegetarian:
+#           type: boolean
+#           description: Indicates if the family recipe is vegetarian.
+#         glutenFree:
+#           type: boolean
+#           description: Indicates if the family recipe is gluten-free.
+#         viewed:
+#           type: boolean
+#           description: Indicates if the user has viewed the family recipe.
+#     Ingredient:
+#       type: object
+#       properties:
+#         id:
+#           type: integer
+#           description: The unique ID of the ingredient.
+#         name:
+#           type: string
+#           description: The name of the ingredient.
+#         amount:
+#           type: string
+#           description: The amount of the ingredient required in the recipe.
+#         unit:
+#           type: string
+#           description: The unit of measurement for the ingredient.
+#     Step:
+#       type: object
+#       properties:
+#         id:
+#           type: integer
+#           description: The unique ID of the step.
+#         description:
+#           type: string
+#           description: The description/instructions for the step.
+#     MealPlan:
+#       type: object
+#       properties:
+#         id:
+#           type: integer
+#           description: The unique ID of the meal plan.
+#         name:
+#           type: string
+#           description: The name of the meal plan.
+#         recipes:
+#           type: array
+#           description: The list of recipes included in the meal plan.
+#           items:
+#             $ref: '#/components/schemas/Recipe'
+#     ErrorResponse:
+#       type: object
+#       properties:
+#         code:
+#           type: string
+#           description: The error code associated with the error.
+#         message:
+#           type: string
+#           description: A descriptive error message.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+openapi: 3.0.3
 info:
-  title: Recipes api
-  description: API for recipes project
-  version: 1.0.1
+  title: Recipe Search System API
+  description: "This API provides functionalities for a recipe search system, allowing users to browse and search for recipes, save favorites, create their own recipes, and plan meals."
+  termsOfService: blha
+  contact:
+    name: Ido
+    url: https://github.com/idolou
+    email: idolou1@gmail.com
+  license:
+    name: Recipes Licence
+  version: 1.0.0
 servers:
 # local:
 - url: "http://127.0.0.1:3000"
-# remote:
-# - url: "http://132.72.65.211"
-  description: SwaggerHub API Auto Mocking hey
+  description: Dev Server
+#remote
+- url: "http://132.73.84.115"
+  description: Prod Server
 tags:
 - name: Auth
   description: All authentication related routes
@@ -16,6 +403,7 @@ tags:
   description: All the user's personal app info
 - name: Recipes
   description: All reciepes general info
+
 paths:
   /register:
     post:
@@ -109,6 +497,62 @@ paths:
           description: user is not authorized
       security:
       - cookieAuth: []
+  /recipes:
+    get:
+    -tags:
+    - Recipes
+    summary: Retrieve a list of recipes
+    description: Retrieves a list of recipes based on the provided search parameters.
+    parameters:
+    - name: query
+      in: query
+      description: The search query for recipes.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+    - name: cuisine
+      in: query
+      description: The cuisine type to filter the recipes.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+    - name: diet
+      in: query
+      description: The diet type to filter the recipes.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+    responses:
+      "200":
+        description: Successful response with a list of recipes.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Recipe'
+      "400":
+        description: Bad request. Invalid query parameters provided.
+    post:
+      summary: Create a new recipe
+      description: Creates a new recipe in the system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+        required: true
+      responses:
+        "201":
+          description: Recipe created successfully.
+        "400":
+          description: Bad request. Invalid recipe object provided.
   /recipes/{recipeId}:
     get:
       tags:
@@ -227,4 +671,70 @@ components:
           type: boolean
           description: indication if the recipe is gluten free
           example: false
+    FamilyRecipe:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique ID of the family recipe.
+        name:
+          type: string
+          description: The name/title of the family recipe.
+        preparationTime:
+          type: string
+          description: The amount of time the preparation process takes.
+        likes:
+          type: integer
+          description: The number of likes the family recipe has received.
+        vegan:
+          type: boolean
+          description: Indicates if the family recipe is vegan.
+        vegetarian:
+          type: boolean
+          description: Indicates if the family recipe is vegetarian.
+        glutenFree:
+          type: boolean
+          description: Indicates if the family recipe is gluten-free.
+        viewed:
+          type: boolean
+          description: Indicates if the user has viewed the family recipe.
+    Ingredient:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique ID of the ingredient.
+        name:
+          type: string
+          description: The name of the ingredient.
+        amount:
+          type: string
+          description: The amount of the ingredient required in the recipe.
+        unit:
+          type: string
+          description: The unit of measurement for the ingredient.
+    Step:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique ID of the step.
+        description:
+          type: string
+          description: The description/instructions for the step.
+    MealPlan:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique ID of the meal plan.
+        name:
+          type: string
+          description: The name of the meal plan.
+        recipes:
+          type: array
+          description: The list of recipes included in the meal plan.
+          items:
+            $ref: '#/components/schemas/Recipe'
+    ErrorResponse:
   
