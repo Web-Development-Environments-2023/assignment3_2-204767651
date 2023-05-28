@@ -1,6 +1,6 @@
 const axios = require("axios");
 const api_domain = "https://api.spoonacular.com/recipes";
-
+const user_utils = require("./user_utils");
 
 
 /**
@@ -17,6 +17,39 @@ async function getRecipeInformation(recipe_id) {
         }
     });
 }
+
+async function getRecipeIngredients(recipe_id) {
+    return await axios.get(`${api_domain}/${recipe_id}/ingredientWidget.json`, {
+        params: {
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
+}
+
+async function getRecipeInstructions(recipe_id) {
+    return await axios.get(`${api_domain}/${recipe_id}/analyzedInstructions`, {
+        params: {
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
+}
+
+
+async function SearchRecipes(query, cuisine, diet, intolerances, numberOfRecipes) {
+    return await axios.get(`${api_domain}/search`, {
+        params: {
+            query: query,
+            cuisine: cuisine,
+            diet: diet,
+            intolerances: intolerances,
+            numberOfRecipes: numberOfRecipes,
+            apiKey: process.env.spooncular_apiKey
+        }
+    });
+}
+
+
+
 
 
 

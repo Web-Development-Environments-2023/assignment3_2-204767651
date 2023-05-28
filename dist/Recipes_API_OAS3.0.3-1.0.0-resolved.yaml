@@ -1,0 +1,252 @@
+---
+openapi: 3.0.3
+info:
+  title: Recipe Search System API
+  description: "This API provides functionalities for a recipe search system, allowing users to browse and search for recipes, save favorites, create their own recipes, and plan meals."
+  termsOfService: blha
+  contact:
+    name: Ido
+    url: https://github.com/idolou
+    email: idolou1@gmail.com
+  license:
+    name: Recipes Licence
+  version: 1.0.0
+servers:
+- url: https://dev.foo.com/v1
+  description: Dev Server
+- url: https://prod.foo.com/v1
+  description: Prod Server
+paths:
+  /recipes:
+    get:
+      summary: Retrieve a list of recipes
+      description: Retrieves a list of recipes based on the provided search parameters.
+      parameters:
+      - name: query
+        in: query
+        description: The search query for recipes.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: cuisine
+        in: query
+        description: The cuisine type to filter the recipes.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: diet
+        in: query
+        description: The diet type to filter the recipes.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successful response with a list of recipes.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+        "400":
+          description: Bad request. Invalid query parameters provided.
+    post:
+      summary: Create a new recipe
+      description: Creates a new recipe in the system.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+        required: true
+      responses:
+        "201":
+          description: Recipe created successfully.
+        "400":
+          description: Bad request. Invalid recipe object provided.
+  /recipes/{recipeId}:
+    get:
+      summary: Retrieve recipe details
+      description: Retrieves the details of a specific recipe.
+      parameters:
+      - name: recipeId
+        in: path
+        description: The ID of the recipe.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Successful response with the recipe details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+        "404":
+          description: Recipe not found.
+    put:
+      summary: Update a recipe
+      description: Updates an existing recipe in the system.
+      parameters:
+      - name: recipeId
+        in: path
+        description: The ID of the recipe to update.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Recipe'
+        required: true
+      responses:
+        "200":
+          description: Recipe updated successfully.
+        "400":
+          description: Bad request. Invalid recipe object provided.
+        "404":
+          description: Recipe not found.
+components:
+  schemas:
+    Recipe:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique ID of the recipe.
+        name:
+          type: string
+          description: The name/title of the recipe.
+        preparationTime:
+          type: string
+          description: The amount of time the preparation process takes.
+        likes:
+          type: integer
+          description: The number of likes the recipe has received.
+        vegan:
+          type: boolean
+          description: Indicates if the recipe is vegan.
+        vegetarian:
+          type: boolean
+          description: Indicates if the recipe is vegetarian.
+        glutenFree:
+          type: boolean
+          description: Indicates if the recipe is gluten-free.
+        viewed:
+          type: boolean
+          description: Indicates if the user has viewed the recipe.
+        favorite:
+          type: boolean
+          description: Indicates if the user has saved the recipe as a favorite.
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique ID of the user.
+        name:
+          type: string
+          description: The name of the user.
+        email:
+          type: string
+          description: The email address of the user.
+          format: email
+        password:
+          type: string
+          description: The password of the user.
+        favorites:
+          type: array
+          description: The list of favorite recipes for the user.
+          items:
+            $ref: '#/components/schemas/Recipe'
+        personalRecipes:
+          type: array
+          description: The list of personal recipes created by the user.
+          items:
+            $ref: '#/components/schemas/Recipe'
+    FamilyRecipe:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique ID of the family recipe.
+        name:
+          type: string
+          description: The name/title of the family recipe.
+        preparationTime:
+          type: string
+          description: The amount of time the preparation process takes.
+        likes:
+          type: integer
+          description: The number of likes the family recipe has received.
+        vegan:
+          type: boolean
+          description: Indicates if the family recipe is vegan.
+        vegetarian:
+          type: boolean
+          description: Indicates if the family recipe is vegetarian.
+        glutenFree:
+          type: boolean
+          description: Indicates if the family recipe is gluten-free.
+        viewed:
+          type: boolean
+          description: Indicates if the user has viewed the family recipe.
+    Ingredient:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique ID of the ingredient.
+        name:
+          type: string
+          description: The name of the ingredient.
+        amount:
+          type: string
+          description: The amount of the ingredient required in the recipe.
+        unit:
+          type: string
+          description: The unit of measurement for the ingredient.
+    Step:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique ID of the step.
+        description:
+          type: string
+          description: The description/instructions for the step.
+    MealPlan:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique ID of the meal plan.
+        name:
+          type: string
+          description: The name of the meal plan.
+        recipes:
+          type: array
+          description: The list of recipes included in the meal plan.
+          items:
+            $ref: '#/components/schemas/Recipe'
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: The error code associated with the error.
+        message:
+          type: string
+          description: A descriptive error message.
