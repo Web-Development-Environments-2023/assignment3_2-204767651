@@ -29,7 +29,7 @@ CREATE TABLE seenrecipes (
 
 CREATE TABLE users_recipes (
     user_id INTEGER NOT NULL,
-    recipe_id INTEGER NOT NULL,
+    recipe_id INTEGER NOT NULL AUTO_INCREMENT,
     image_url VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL,
     cooking_time INTEGER NOT NULL,
@@ -40,8 +40,11 @@ CREATE TABLE users_recipes (
     servings INTEGER NOT NULL,
     isFavorite BOOLEAN DEFAULT TRUE,
     isWatched BOOLEAN DEFAULT TRUE,
-    PRIMARY KEY(user_id, recipe_id)
+    Ingredients VARCHAR(255) NOT NULL,
+    Instructions VARCHAR(255) NOT NULL,
+    PRIMARY KEY(recipe_id)
   );
+
 
   CREATE Table family_recipes(
     user_id INTEGER NOT NULL,

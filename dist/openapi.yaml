@@ -118,6 +118,49 @@ paths:
           description: user is not authorized
       security:
       - cookieAuth: []
+  /users/myrecipes:
+    get:
+        tags:
+        - Users
+        summary: get all the personal recipes of the user according to the user_id
+        description: get all the recipes the user made
+        operationId: getmyrecipe
+        responses:
+          "200":
+            description: successful operation - personal recipe returned
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/recipePreviewPersonal'
+          "400":
+            description: Invalid ID supplied
+          "401":
+            description: Not connected to the Data Base
+          "402":
+            description: Request failed because not enough credit in the sponcular API
+    post: 
+      tags:
+      - Users
+      summary: upload a personal recipe
+      description: upload a recipe as a personal recipe
+      operationId: setmyrecipe
+      requestBody:
+        description: JSON object for register
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recipePreviewPersonal'
+        required: true
+      responses:
+        "200":
+          description: successful operation, element added to mypersonal recipe
+        "400":
+          description: Invalid recipe supplied
+        "401":
+          description: Not connected to the Data Base
+
   # /users/lastSeen:
   #   post:
   #     tags:
@@ -422,6 +465,58 @@ components:
           description: The list of recipes included in the meal plan.
           items:
             $ref: '#/components/schemas/Recipe'
+    recipePreviewPersonal:
+      required:
+      - id
+      - title
+      - cooking_time
+      - image_url
+      - popularity
+      - vegan
+      - vegetarian
+      - gluten_free
+      - servings
+      - instructions
+      - ingredients
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 8
+        title:
+          type: string
+          example: Gefilte Fish
+        cooking_time:
+          type: integer
+          example: 20
+        image:
+          type: string
+          example: "https://dar_abu_told_me_she_loves_gefilte_fish.com/picture"
+        popularity:
+          type: integer
+          example: 1
+        vegan:
+          type: boolean
+          example: 0
+        vegetarian:
+          type: boolean
+          example: 1
+        gluten_free:
+          type: boolean
+          example: 0
+        servings:
+          type: integer
+          example: 3
+        instructions:
+          minLength: 2
+          type: string
+          example: take a fish and cook
+        ingredients:
+          minLength: 2
+          type: string
+          example: 3 onion
+
+        
 
     
     ErrorResponse:

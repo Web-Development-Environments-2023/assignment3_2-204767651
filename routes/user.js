@@ -36,16 +36,16 @@ router.post('/favorites', async (req,res,next) => {
   }
 })
 
-router.post("/lastSeen", async (req, res, next) => {
-  try {
-    const user_id = req.session.user_id;
-    const recipeId = req.body.recipeId;
-    await user_utils.markAsSeen(req.session.user_id, recipeId);
-    res.status(200).send("The Recipe was successfully saved as seen");;
-  } catch (error) {
-    next(error);
-  }
-});
+// router.post("/lastSeen", async (req, res, next) => {
+//   try {
+//     const user_id = req.session.user_id;
+//     const recipeId = req.body.recipeId;
+//     await user_utils.markAsSeen(req.session.user_id, recipeId);
+//     res.status(200).send("The Recipe was successfully saved as seen");;
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 /**
  * This path returns the favorites recipes that were saved by the logged-in user
@@ -63,6 +63,54 @@ router.get('/favorites', async (req,res,next) => {
     next(error); 
   }
 });
+
+router.get('/myrecipes', async (req, res, next) => {
+  try{
+    const recipes = await user_utils.getMyRecipes(req.session.user_id);
+    res.status(200).send(recipes);
+  } catch (error){
+    next(error)
+  }
+});
+
+router.post('/myrecipes', async (req, res, next) => {
+  try{
+    const user_id = req.session.user_id;
+    const title = req.body.title;
+    const cooking_time = req.body.cooking_time;
+    const image_url = req.body.image;
+    const popularity = req.body.popularity;
+    const vegan = req.body.vegan;
+    const vegetarian = req.body.vegetarian;
+    const gluten_free = req.body.gluten_free;
+    const servings = req.body.servings;
+    const instructions = req.body.instructions;
+    const ingredients = req.body.ingredients;
+
+    console.log(cooking_time)
+    console.log(typeof(cooking_time))
+    
+
+    
+    await user_utils.addMyRecipe(
+      user_id,
+      title,
+      cooking_time,
+      image_url,
+      popularity,
+      vegan,
+      vegetarian,
+      gluten_free,
+      servings,
+      instructions,
+      ingredients
+    );
+    res.status(200).send("The Recipe was successfully saved as a personal recipe");
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 
 

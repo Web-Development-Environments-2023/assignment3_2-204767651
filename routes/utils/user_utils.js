@@ -25,8 +25,27 @@ async function getRcipeIndication(tablename, recipe_id, user_id){
   return false;
 }
 
+async function getMyRecipes(user_id){
+  let arrOfMyRecipes = await DButils.execQuery(
+    `SELECT * FROM users_recipes where user_id='${user_id}' `
+  )
+  result = Promise.all(arrOfMyRecipes)
+  return result;
+}
+
+
+async function addMyRecipe(user_id, title, cooking_time,image_url,popularity,vegan,vegetarian,gluten_free,servings,instructions,ingredients) {
+  await DButils.execQuery(
+      `INSERT INTO users_recipes (user_id, title, cooking_time,image_url,popularity,vegan,vegetarian,gluten_free,servings,instructions,ingredients) VALUES ('${user_id}', '${title}', '${cooking_time}',
+      '${image_url}', '${popularity}', '${vegan}', '${vegetarian}', '${gluten_free}', '${servings}', '${instructions}', '${ingredients}')`
+    );
+  
+}
+
 
 exports.getRcipeIndication = getRcipeIndication;
 exports.markAsSeen = markAsSeen;
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
+exports.getMyRecipes = getMyRecipes;
+exports.addMyRecipe = addMyRecipe;
