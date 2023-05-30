@@ -16,6 +16,27 @@ router.get("/random", async (req, res, next) => {
 });
 
 
+router.get("/search", async (req, res, next) => {
+  try {
+    const query = req.query.query;
+    const cuisine = req.query.cuisine;
+    const diet = req.query.diet;
+    const intolerances = req.query.intolerances;
+    const numberOfRecipes = req.query.numberOfRecipes || 5;
+    const search_results = await recipes_utils.SearchRecipes(query, cuisine, diet, intolerances, numberOfRecipes);
+
+    // //adding field to seission for saving last searches
+    // if (req.session && req.session.user_id) {
+    //   req.session.last_search=req.query.getSearchResults
+    // }
+    res.send(search_results);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+
 /**
  * This path returns a full details of a recipe by its id
  */
