@@ -107,7 +107,7 @@ paths:
             schema:
               type: object
               properties:
-                reciepeId:
+                recipeId:
                   type: string
                   description: reciepe's id which the user saved
                   example: 716429
@@ -118,6 +118,36 @@ paths:
           description: user is not authorized
       security:
       - cookieAuth: []
+  # /users/lastSeen:
+  #   post:
+  #     tags:
+  #     - users
+  #     summary: mark a recipe as seen
+  #     description: mark a recipe as last seen
+  #     parameters:
+  #     - name: recipe_id
+  #       in: path
+  #       description: recipe's id
+  #       required: true
+  #       style: simple
+  #       explode: false
+  #       schema:
+  #         type: integer
+  #     requestBody:
+  #       description: JSON object for register
+
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/recipeId'
+  #       required: true
+  #     responses:
+  #       "200":
+  #         description: successful operation
+  #       "400":
+  #         description: Invalid recipe supplied
+  #       "401":
+  #         description: Not connected to the Data Base
   /recipes:
     get:
     -tags:
@@ -196,6 +226,41 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RecipePreview'
+        "404":
+          description: recipeId is not exists
+  /recipes/{recipeId}/fullDetails:
+    get:
+      tags:
+      - Recipes
+      summary: Return full details on recipe by his ID
+      description: Return preview + instructions + ingredians
+      parameters:
+      - name: recipeId
+        in: path
+        description: recipe's id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: data about the recipe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipePreview'
+        "404":
+          description: recipeId is not exists
+  /recipes/random:
+    get:
+      tags:
+      - Recipes
+      summary: Returns 3 random recipes from spoonculare in preview format 
+      description: Returns 3 random recipes from spoonculare in preview format 
+      responses:
+        "200":
+          description: three random recipes in preview format 
         "404":
           description: recipeId is not exists
 components:
@@ -357,5 +422,7 @@ components:
           description: The list of recipes included in the meal plan.
           items:
             $ref: '#/components/schemas/Recipe'
+
+    
     ErrorResponse:
   

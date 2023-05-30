@@ -16,8 +16,9 @@ router.post("/Register", async (req, res, next) => {
       country: req.body.country,
       password: req.body.password,
       email: req.body.email,
-      profilePic: req.body.profilePic
-    }
+      // profilePic: req.body.profilePic
+    };
+    console.log(user_details);
     let users = [];
     users = await DButils.execQuery("SELECT username from users");
 
@@ -30,7 +31,9 @@ router.post("/Register", async (req, res, next) => {
       parseInt(process.env.bcrypt_saltRounds)
     );
     await DButils.execQuery(
-      `INSERT INTO users VALUES ('${user_details.username}', '${user_details.firstname}', '${user_details.lastname}',
+      // `INSERT INTO users VALUES (${user_details.username}', '${user_details.firstname}', '${user_details.lastname}',
+      // '${user_details.country}', '${hash_password}', '${user_details.email}')`
+      `INSERT INTO users (username,firstname,lastname,country,password,email) VALUES ('${user_details.username}', '${user_details.firstname}', '${user_details.lastname}',
       '${user_details.country}', '${hash_password}', '${user_details.email}')`
     );
     res.status(201).send({ message: "user created", success: true });
@@ -59,6 +62,8 @@ router.post("/Login", async (req, res, next) => {
 
     // Set cookie
     req.session.user_id = user.user_id;
+
+    console.log("session", req.session.user_id);
 
 
     // return cookie
