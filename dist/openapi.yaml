@@ -296,6 +296,9 @@ paths:
         "404":
           description: recipeId is not exists
   /recipes/random:
+
+
+
     get:
       tags:
       - Recipes
@@ -306,6 +309,57 @@ paths:
           description: three random recipes in preview format 
         "404":
           description: recipeId is not exists
+  /recipes/search/:
+    get:
+      tags:
+      - Recipes
+      summary: get recipes by query
+      parameters:
+      - name: query
+        in: query
+        description: query
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: cuisine
+        in: query
+        description: cuisine
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: diet
+        in: query
+        description: diet
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: intolerances
+        in: query
+        description: intolerances
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: number
+        in: query
+        description: number
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: search result
+
+
 components:
   schemas:
     User:

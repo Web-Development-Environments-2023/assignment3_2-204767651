@@ -4,6 +4,68 @@ const user_utils = require("./user_utils");
 const DButils = require("./DButils");
 const e = require("express");
 
+const search_filters = {
+    "cuisine":[
+        'African',
+        'Asian',
+        'American',
+        'British',
+        'Cajun',
+        'Caribbean',
+        'Chinese',
+        'Eastern European',
+        'European',
+        'French',
+        'German',
+        'Greek',
+        'Indian',
+        'Irish',
+        'Italian',
+        'Japanese',
+        'Jewish',
+        'Korean',
+        'Latin American',
+        'Mediterranean',
+        'Mexican',
+        'Middle Eastern',
+        'Nordic',
+        'Southern',
+        'Spanish',
+        'Thai',
+        'Vietnamese'
+    ],
+    "diet":[
+        'Gluten Free',
+        'Ketogenic',
+        'Vegetarian',
+        'Lacto-Vegetarian',
+        'Ovo-Vegetarian',
+        'Vegan',
+        'Pescetarian',
+        'Paleo',
+        'Primal',
+        'Low FODMAP',
+        'Whole30'
+    ],
+    "intolerances":[
+        'Dairy',
+        'Egg',
+        'Gluten',
+        'Grain',
+        'Peanut',
+        'Seafood',
+        'Sesame',
+        'Shellfish',
+        'Soy',
+        'Sulfite',
+        'Tree Nut',
+        'Wheat'
+    ]
+}
+
+  
+
+  
 
 
 
@@ -133,17 +195,21 @@ async function SearchRecipes(query, cuisine, diet, intolerances, numberOfRecipes
     let recipes_arr = recipes_arr_info.data.results;
     let search_results = [];
     for (let i = 0; i < recipes_arr.length; i++) {
-        search_results.push(await getRecipePreview(recipes_arr[i].id));
-        search_results[i].instructions = await getRecipeInstructions(recipes_arr[i].id);
+        new_recipe = await getRecipePreview(recipes_arr[i].id);
+        let recipe_instructions = await getRecipeInstructions(recipes_arr[i].id);
+        let {steps} = recipe_instructions.data[0];
+        new_recipe.instructions = steps;
+        search_results.push(new_recipe);
     }
     search_results = await Promise.all(search_results);
 
 
     return search_results;
+}
 
 
-
-
+async function getSearchFilters(){
+    return search_filters;
 }
 
 
