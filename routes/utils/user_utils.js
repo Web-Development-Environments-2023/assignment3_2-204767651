@@ -9,11 +9,33 @@ async function getFavoriteRecipes(user_id){
     return recipes_id;
 }
 
-async function markAsSeen(user_id, recipe_id) {
-    await DButils.execQuery(
-      `insert into  seenrecipes ('${user_id}','${recipe_id}',NOW())`
-    );
-  }
+// async function markAsSeen(user_id, recipe_id) {
+//     await DButils.execQuery(
+//       `insert into  seenrecipes ('${user_id}','${recipe_id}',NOW())`
+//     );
+//   }
+
+// async function markAsSeen(user_id, recipe_id) {
+//   await DButils.execQuery(
+//     `INSERT INTO seenrecipes (user_id, recipe_id, viewed_at)
+//      VALUES ('${user_id}', '${recipe_id}', NOW())
+//      ON DUPLICATE KEY UPDATE time = NOW()`
+//   );
+// }
+
+async function getLastThreeRecipesHist(user_id){
+  const query = `
+  SELECT recipe_id
+  FROM seenrecipes
+  WHERE user_id = '${user_id}'
+  ORDER BY viewed_at DESC
+  LIMIT 3
+`;
+  const result = await DButils.execQuery(query);
+  console.log(result);
+  return result;
+}
+
 
 
 async function getRcipeIndication(tablename, recipe_id, user_id){
@@ -39,13 +61,30 @@ async function addMyRecipe(user_id, title, cooking_time,image_url,popularity,veg
       `INSERT INTO users_recipes (user_id, title, cooking_time,image_url,popularity,vegan,vegetarian,gluten_free,servings,instructions,ingredients) VALUES ('${user_id}', '${title}', '${cooking_time}',
       '${image_url}', '${popularity}', '${vegan}', '${vegetarian}', '${gluten_free}', '${servings}', '${instructions}', '${ingredients}')`
     );
-  
+}
+
+async function getMyFamilyRecipes(user_id){
+  let arrOfMyFamilyRecipes = await DButils.execQuery(
+    `SELECT * FROM family_recipes where user_id='${user_id}' `
+  )
+  result = Promise.all(arrOfMyFamilyRecipes)
+  return result;
+}
+
+async function addMyFamilyRecipe(user_id, title, recipe_owner,when_cooking,ingredients,instructions,image_url) {
+  await DButils.execQuery(
+      `INSERT INTO family_recipes (user_id, title, recipe_owner,when_cooking,ingredients,instructions,image_url) VALUES ('${user_id}', '${title}', '${recipe_owner}',
+      '${when_cooking}', '${ingredients}', '${instructions}', '${image_url}')`
+    );
 }
 
 
 exports.getRcipeIndication = getRcipeIndication;
-exports.markAsSeen = markAsSeen;
+//exports.markAsSeen = markAsSeen;
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
 exports.getMyRecipes = getMyRecipes;
 exports.addMyRecipe = addMyRecipe;
+exports.getMyFamilyRecipes = getMyFamilyRecipes;
+exports.addMyFamilyRecipe = addMyFamilyRecipe;
+exports.getLastThreeRecipesHist = getLastThreeRecipesHist;

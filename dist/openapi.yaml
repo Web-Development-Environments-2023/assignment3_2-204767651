@@ -161,36 +161,72 @@ paths:
         "401":
           description: Not connected to the Data Base
 
-  # /users/lastSeen:
-  #   post:
-  #     tags:
-  #     - users
-  #     summary: mark a recipe as seen
-  #     description: mark a recipe as last seen
-  #     parameters:
-  #     - name: recipe_id
-  #       in: path
-  #       description: recipe's id
-  #       required: true
-  #       style: simple
-  #       explode: false
-  #       schema:
-  #         type: integer
-  #     requestBody:
-  #       description: JSON object for register
 
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/recipeId'
-  #       required: true
-  #     responses:
-  #       "200":
-  #         description: successful operation
-  #       "400":
-  #         description: Invalid recipe supplied
-  #       "401":
-  #         description: Not connected to the Data Base
+  /users/myfamilyrecipes:
+    get:
+      tags:
+      - Users
+      summary: get all the personal recipes of the user according to the user_id
+      description: get all favorite
+      operationId: getfamily
+      responses:
+        "200":
+          description: successful operation - personal recipe returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/recipePreviewFamily'
+        "400":
+          description: Invalid ID supplied
+        "401":
+          description: Not connected to the Data Base 
+    post: 
+      tags:
+      - Users
+      summary: upload a family recipe
+      description: upload a recipe as a family recipe
+      operationId: setmyrecipe
+      requestBody:
+        description: JSON object for register
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recipePreviewFamily'
+        required: true
+      responses:
+        "200":
+          description: successful operation, element added to my family recipe
+        "400":
+          description: Invalid recipe supplied
+        "401":
+          description: Not connected to the Data Base
+
+
+  /users/lastSeen:
+    get:
+      tags:
+      - Users
+      summary: Retrieve user last 3 recipes viewd
+      description: get from last seen table the users last 3 reecipes and return the recipes id
+      operationId: getlastthreerecipeshist
+      responses:
+        "200":
+          description: successful operation - personal recipe returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/recipePreviewPersonal'
+        "400":
+          description: Invalid ID supplied
+        "401":
+          description: Not connected to the Data Base
+        "402":
+          description: Request failed because not enough credit in the sponcular API
+
   /recipes:
     get:
     -tags:
@@ -521,7 +557,6 @@ components:
             $ref: '#/components/schemas/Recipe'
     recipePreviewPersonal:
       required:
-      - id
       - title
       - cooking_time
       - image_url
@@ -534,9 +569,6 @@ components:
       - ingredients
       type: object
       properties:
-        id:
-          type: integer
-          example: 8
         title:
           type: string
           example: Gefilte Fish
@@ -569,6 +601,37 @@ components:
           minLength: 2
           type: string
           example: 3 onion
+
+    recipePreviewFamily:
+      required:
+      - title
+      - recipe_owner
+      - when_cooking
+      - ingredients
+      - instructions
+      - image_url
+      type: object
+      properties:
+        title:
+          type: string
+          example: salad
+        recipe_owner:
+          type: string
+          example: ester
+        when_cooking:
+          type: string
+          example: at shavuot
+        ingredients:
+          type: string
+          example: tomato and onion
+        instructions:
+          type: string
+          example: cut and mix
+        image_url:
+          type: string
+          example: "https://dar_abu_told_me_she_loves_gefilte_fish.com/picture"
+
+
 
         
 

@@ -52,7 +52,9 @@ router.get("/:recipeId", async (req, res, next) => {
 router.get("/:recipeId/fullDetails", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
-    const recipe = await recipes_utils.getRecipeFullDetails(req.params.recipeId, user_id);
+    const recipe_id = req.params.recipeId
+    const recipe = await recipes_utils.getRecipeFullDetails(recipe_id, user_id);
+    await recipes_utils.markAsSeen(user_id,recipe_id)
     res.send(recipe);
   } catch (error) {
     next(error);

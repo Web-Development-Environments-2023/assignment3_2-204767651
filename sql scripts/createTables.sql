@@ -48,13 +48,13 @@ CREATE TABLE users_recipes (
 
   CREATE Table family_recipes(
     user_id INTEGER NOT NULL,
-    recipe_id INTEGER NOT NULL,
+    recipe_id INTEGER NOT NULL AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
     recipe_owner VARCHAR(255) NOT NULL,
     when_cooking VARCHAR(255) NOT NULL,
     Ingredients VARCHAR(255) NOT NULL,
     Instructions VARCHAR(255) NOT NULL,
     image_url VARCHAR(255),
-    PRIMARY KEY(user_id, recipe_id)
+    PRIMARY KEY(recipe_id)
   )
 

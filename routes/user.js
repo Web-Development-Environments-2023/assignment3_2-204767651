@@ -28,7 +28,6 @@ router.post('/favorites', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
     const recipe_id = req.body.recipeId;
-    console.log(recipe_id);
     await user_utils.markAsFavorite(user_id,recipe_id);
     res.status(200).send("The Recipe successfully saved as favorite");
     } catch(error){
@@ -36,16 +35,16 @@ router.post('/favorites', async (req,res,next) => {
   }
 })
 
-// router.post("/lastSeen", async (req, res, next) => {
-//   try {
-//     const user_id = req.session.user_id;
-//     const recipeId = req.body.recipeId;
-//     await user_utils.markAsSeen(req.session.user_id, recipeId);
-//     res.status(200).send("The Recipe was successfully saved as seen");;
-//   } catch (error) {
-//     next(error);
-//   }
-// });
+router.get("/lastSeen", async (req, res, next) => {
+  try {
+    const user_id = req.session.user_id;
+    let lastThreeRecipesViewd = await user_utils.getLastThreeRecipesHist(user_id)
+    console.log(lastThreeRecipesViewd);
+    res.status(200).send(lastThreeRecipesViewd);
+  } catch (error) {
+    next(error);
+  }
+});
 
 /**
  * This path returns the favorites recipes that were saved by the logged-in user
@@ -87,10 +86,6 @@ router.post('/myrecipes', async (req, res, next) => {
     const instructions = req.body.instructions;
     const ingredients = req.body.ingredients;
 
-    console.log(cooking_time)
-    console.log(typeof(cooking_time))
-    
-
     
     await user_utils.addMyRecipe(
       user_id,
@@ -111,6 +106,51 @@ router.post('/myrecipes', async (req, res, next) => {
   }
 });
 
+
+router.get('/myfamilyrecipes', async (req, res, next) => {
+  try{
+    const recipes = await user_utils.getMyFamilyRecipes(req.session.user_id);
+    res.status(200).send(recipes);
+  } catch (error){
+    next(error)
+  }
+});
+
+router.post('/myfamilyrecipes', async (req, res, next) => {
+  const user_id = req.session.user_id;
+  console.log(user_id)
+  try{
+    const user_id = req.session.user_id;
+    console.log(user_id)
+    const title = req.body.title;
+    console.log(title)
+    const recipe_owner = req.body.recipe_owner;
+    const when_cooking = req.body.when_cooking;
+    const ingredients = req.body.ingredients;
+    const instructions = req.body.instructions;
+    const image_url = req.body.image;
+    // const cooking_time = req.body.cooking_time;
+    // const popularity = req.body.popularity;
+    // const vegan = req.body.vegan;
+    // const vegetarian = req.body.vegetarian;
+    // const gluten_free = req.body.gluten_free;
+    // const servings = req.body.servings;
+
+    
+    await user_utils.addMyFamilyRecipe(
+      user_id,
+      title,
+      recipe_owner,
+      when_cooking,
+      ingredients,
+      instructions,
+      image_url,
+    );
+    res.status(200).send("The Recipe was successfully saved as a personal recipe");
+  } catch (error) {
+    next(error);
+  }
+});
 
 
 

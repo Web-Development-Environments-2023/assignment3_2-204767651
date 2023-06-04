@@ -140,12 +140,11 @@ async function getRecipeFullDetails(recipes_id, user_id=undefined){
     let recipe_ingredients = await getRecipeIngredients(recipes_id);
     let {ingredients} = recipe_ingredients.data;
     recipe_details.ingredients = ingredients;
-
     let recipe_instructions = await getRecipeInstructions(recipes_id);
+    
     let {steps} = recipe_instructions.data[0];
     recipe_details.instructions = steps;
-    
-
+    // await user_utils.markAsSeen(user_id,recipes_id)
     return recipe_details;
 }
 
@@ -243,6 +242,16 @@ function extractRecipeDetails(recipe_data)
 
 
 
+async function markAsSeen(user_id, recipe_id) {
+    await DButils.execQuery(
+      `INSERT INTO seenrecipes (user_id, recipe_id, viewed_at)
+       VALUES ('${user_id}', '${recipe_id}', NOW())
+       ON DUPLICATE KEY UPDATE viewed_at = NOW()`
+    );
+  }
+
+
+
 
 // return 3 random recipes, by using spoonacular API
 async function getRandomRecipes() {
@@ -269,4 +278,5 @@ exports.getRecipePreview = getRecipePreview;
 exports.getRecipeDetails = getRecipeDetails;
 exports.getRandomRecipes = getRandomRecipes;
 exports.SearchRecipes = SearchRecipes;
+exports.markAsSeen = markAsSeen
 
