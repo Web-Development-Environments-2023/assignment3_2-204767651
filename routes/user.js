@@ -38,9 +38,11 @@ router.post('/favorites', async (req,res,next) => {
 router.get("/lastSeen", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
-    let lastThreeRecipesViewd = await user_utils.getLastThreeRecipesHist(user_id)
-    console.log(lastThreeRecipesViewd);
-    res.status(200).send(lastThreeRecipesViewd);
+    let lastThreeRecipesIDViewd = await user_utils.getLastThreeRecipesHist(user_id)
+    let recipes_id_array = [];
+    lastThreeRecipesIDViewd.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+    const results = await recipe_utils.getRecipesPreview(recipes_id_array , user_id);
+    res.status(200).send(results);
   } catch (error) {
     next(error);
   }

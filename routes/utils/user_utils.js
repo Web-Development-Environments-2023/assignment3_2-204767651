@@ -32,7 +32,6 @@ async function getLastThreeRecipesHist(user_id){
   LIMIT 3
 `;
   const result = await DButils.execQuery(query);
-  console.log(result);
   return result;
 }
 
