@@ -24,6 +24,9 @@ async function getFavoriteRecipes(user_id){
 // }
 
 async function getLastThreeRecipesHist(user_id){
+  if (user_id == undefined){
+    return [];
+  }
   const query = `
   SELECT recipe_id
   FROM seenrecipes

@@ -307,7 +307,7 @@ paths:
                 $ref: '#/components/schemas/RecipePreview'
         "404":
           description: recipeId is not exists
-  /recipes/{recipeId}/fullDetails:
+  /recipes/fullDetails/{recipeId}:
     get:
       tags:
       - Recipes
