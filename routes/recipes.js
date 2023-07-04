@@ -40,16 +40,8 @@ router.get("/search", async (req, res, next) => {
 /**
  * This path returns a full details of a recipe by its id
  */
-router.get("/:recipeId", async (req, res, next) => {
-  try {
-    const recipe = await recipes_utils.getRecipePreview(req.params.recipeId, req.session.user_id);
-    res.send(recipe);
-  } catch (error) {
-    next(error);
-  }
-});
 
-router.get("/:recipeId/fullDetails", async (req, res, next) => {
+router.get("/fullDetails/:recipeId", async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
     const recipe_id = req.params.recipeId
@@ -60,6 +52,18 @@ router.get("/:recipeId/fullDetails", async (req, res, next) => {
     next(error);
   }
 });
+
+
+router.get("/:recipeId", async (req, res, next) => {
+  try {
+    const recipe = await recipes_utils.getRecipePreview(req.params.recipeId, req.session.user_id);
+    res.send(recipe);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 
 
 

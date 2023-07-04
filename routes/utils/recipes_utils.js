@@ -243,11 +243,14 @@ function extractRecipeDetails(recipe_data)
 
 
 async function markAsSeen(user_id, recipe_id) {
-    await DButils.execQuery(
-      `INSERT INTO seenrecipes (user_id, recipe_id, viewed_at)
-       VALUES ('${user_id}', '${recipe_id}', NOW())
-       ON DUPLICATE KEY UPDATE viewed_at = NOW()`
-    );
+    if(user_id){
+        await DButils.execQuery(
+            `INSERT INTO seenrecipes (user_id, recipe_id, viewed_at)
+             VALUES ('${user_id}', '${recipe_id}', NOW())
+             ON DUPLICATE KEY UPDATE viewed_at = NOW()`
+          );
+    }
+
   }
 
 
