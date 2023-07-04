@@ -23,7 +23,8 @@ CREATE TABLE seenrecipes (
    user_id INTEGER NOT NULL,
    recipe_id INTEGER NOT NULL,
    viewed_at TIMESTAMP NOT NULL,
-   PRIMARY KEY(user_id, recipe_id)
+   PRIMARY KEY(user_id, recipe_id),
+   UNIQUE(user_id, recipe_id)
 );
 
 
