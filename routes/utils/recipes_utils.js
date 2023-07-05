@@ -227,6 +227,7 @@ function extractRecipeDetails(recipe_data)
             vegan,
             vegetarian,
             glutenFree,
+            servings
         } = recipe_data;
         return {
             id: id,
@@ -237,6 +238,7 @@ function extractRecipeDetails(recipe_data)
             vegan: vegan,
             vegetarian: vegetarian,
             glutenFree: glutenFree,
+            servings: servings
         }
 }
 
