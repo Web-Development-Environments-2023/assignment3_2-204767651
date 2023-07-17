@@ -144,7 +144,6 @@ async function getRecipeFullDetails(recipes_id, user_id=undefined){
     
     let {steps} = recipe_instructions.data[0];
     recipe_details.instructions = steps;
-    // await user_utils.markAsSeen(user_id,recipes_id)
     return recipe_details;
 }
 
@@ -191,15 +190,8 @@ async function getRecipesBySearch(query, cuisine, diet, intolerances, numberOfRe
 
 async function SearchRecipes(query, cuisine, diet, intolerances, numberOfRecipes) {
     let recipes_arr_info = await getRecipesBySearch(query, cuisine, diet, intolerances, numberOfRecipes);
-    let recipes_arr = recipes_arr_info.data.results;
-    let search_results = [];
-    for (let i = 0; i < recipes_arr.length; i++) {
-        new_recipe = await getRecipePreview(recipes_arr[i].id);
-        let recipe_instructions = await getRecipeInstructions(recipes_arr[i].id);
-        let {steps} = recipe_instructions.data[0];
-        new_recipe.instructions = steps;
-        search_results.push(new_recipe);
-    }
+    let recipes_arr = recipes_arr_info.data.results.map((recipe) => recipe.id);
+    let search_results = await getRecipesPreview(recipes_arr);
     search_results = await Promise.all(search_results);
 
 
