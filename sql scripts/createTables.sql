@@ -29,22 +29,19 @@ CREATE TABLE seenrecipes (
 
 
 CREATE TABLE users_recipes (
-    user_id INTEGER NOT NULL,
-    recipe_id INTEGER NOT NULL AUTO_INCREMENT,
-    image_url VARCHAR(255) NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    cooking_time INTEGER NOT NULL,
-    popularity INTEGER NOT NULL,
-    vegan BOOLEAN NOT NULL,
-    vegetarian BOOLEAN NOT NULL,
-    gluten_free BOOLEAN NOT NULL,
-    servings INTEGER NOT NULL,
-    isFavorite BOOLEAN DEFAULT TRUE,
-    isWatched BOOLEAN DEFAULT TRUE,
-    Ingredients VARCHAR(255) NOT NULL,
-    Instructions VARCHAR(255) NOT NULL,
-    PRIMARY KEY(recipe_id)
-  );
+  user_id INTEGER NOT NULL,
+  recipe_id INT AUTO_INCREMENT PRIMARY KEY,
+  image_url VARCHAR(255),
+  title VARCHAR(255) NOT NULL,
+  cooking_time INTEGER NOT NULL,
+  vegan BOOLEAN NOT NULL,
+  vegetarian BOOLEAN NOT NULL,
+  gluten_free BOOLEAN NOT NULL,
+  servings INTEGER NOT NULL,
+  instructions VARCHAR(255),
+  ingredients VARCHAR(255)
+) AUTO_INCREMENT = 200000;
+
 
 
   CREATE Table family_recipes(

@@ -80,11 +80,10 @@ router.post('/myrecipes', async (req, res, next) => {
     const user_id = req.session.user_id;
     const title = req.body.title;
     const cooking_time = req.body.cooking_time;
-    const image_url = req.body.image;
-    const popularity = req.body.popularity;
-    const vegan = req.body.vegan;
-    const vegetarian = req.body.vegetarian;
-    const gluten_free = req.body.gluten_free;
+    const image_url = req.body.image_url;
+    const vegan = Boolean(req.body.vegan);
+    const vegetarian = Boolean(req.body.vegetarian);
+    const gluten_free = Boolean(req.body.gluten_free);
     const servings = req.body.servings;
     const instructions = req.body.instructions;
     const ingredients = req.body.ingredients;
@@ -95,7 +94,6 @@ router.post('/myrecipes', async (req, res, next) => {
       title,
       cooking_time,
       image_url,
-      popularity,
       vegan,
       vegetarian,
       gluten_free,
@@ -113,6 +111,7 @@ router.post('/myrecipes', async (req, res, next) => {
 router.get('/myfamilyrecipes', async (req, res, next) => {
   try{
     const recipes = await user_utils.getMyFamilyRecipes(req.session.user_id);
+    console.log(recipes)
     res.status(200).send(recipes);
   } catch (error){
     next(error)

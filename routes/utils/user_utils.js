@@ -58,10 +58,14 @@ async function getMyRecipes(user_id){
 }
 
 
-async function addMyRecipe(user_id, title, cooking_time,image_url,popularity,vegan,vegetarian,gluten_free,servings,instructions,ingredients) {
+async function addMyRecipe(user_id, title, cooking_time,image_url,vegan,vegetarian,gluten_free,servings,instructions,ingredients) {
+  const veganValue = vegan ? 1 : 0; // Convert boolean value to 1 or 0
+  const vegetarianValue = vegetarian ? 1 : 0;
+  const glutenFreeValue = gluten_free ? 1 : 0;
+  
   await DButils.execQuery(
-      `INSERT INTO users_recipes (user_id, title, cooking_time,image_url,popularity,vegan,vegetarian,gluten_free,servings,instructions,ingredients) VALUES ('${user_id}', '${title}', '${cooking_time}',
-      '${image_url}', '${popularity}', '${vegan}', '${vegetarian}', '${gluten_free}', '${servings}', '${instructions}', '${ingredients}')`
+      `INSERT INTO users_recipes (user_id, title, cooking_time,image_url,vegan,vegetarian,gluten_free,servings,instructions,ingredients) VALUES ('${user_id}', '${title}', '${cooking_time}',
+      '${image_url}', '${veganValue}', '${vegetarianValue}', '${glutenFreeValue}', '${servings}', '${instructions}', '${ingredients}')`
     );
 }
 
