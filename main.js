@@ -7,6 +7,8 @@ const session = require("client-sessions");
 const DButils = require("./routes/utils/DButils");
 var cors = require('cors')
 
+
+
 var app = express();
 app.use(logger("dev")); //logger
 app.use(express.json()); // parse application/json
@@ -18,7 +20,8 @@ app.use(
     duration: 24 * 60 * 60 * 1000, // expired after 20 sec
     activeDuration: 1000 * 60 * 5, // if expiresIn < activeDuration,
     cookie: {
-      httpOnly: false,
+    httpOnly: false,
+    secure: false,
     }
     //the session will be extended by activeDuration milliseconds
   })
@@ -49,7 +52,7 @@ const corsConfig = {
 app.use(cors(corsConfig));
 app.options("*", cors(corsConfig));
 
-var port = process.env.PORT || "80"; //local=3000 remote=80
+var port = process.env.PORT || "3000"; //local=3000 remote=80
 //#endregion
 const user = require("./routes/user");
 const recipes = require("./routes/recipes");
@@ -58,6 +61,7 @@ const auth = require("./routes/auth");
 
 //#region cookie middleware
 app.use(function (req, res, next) {
+
   if (req.session && req.session.user_id) {
     DButils.execQuery("SELECT user_id FROM users")
       .then((users) => {
@@ -68,6 +72,7 @@ app.use(function (req, res, next) {
       })
       .catch((error) => next());
   } else {
+    console.log("no cookie");
     next();
   }
 });
